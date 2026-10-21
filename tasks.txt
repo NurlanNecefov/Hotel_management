@@ -1,0 +1,19 @@
+Mehemmed
+• 1. Create a hotel chain
+
+• 2. Add a location to a hotel chain
+
+• 4. Display the locations in a hotel chain
+• 5. Display the customers at a location
+
+• 7. Delete a location
+
+
+Nurlan
+• 3. Add a booking at a location
+• 6. Delete a booking at a location
+
+• 8. Search for a customer by last name
+• 9. Quit
+
+• 10. Report
