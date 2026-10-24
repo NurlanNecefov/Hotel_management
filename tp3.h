@@ -11,7 +11,7 @@ typedef struct Client
     char *first_name;
     int age;
     int num_room;
-    T_Client *next;
+    struct Client *next;
 } T_Client;
 
 typedef struct Site
