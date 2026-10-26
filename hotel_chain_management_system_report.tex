@@ -1,0 +1,110 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[a4paper, margin=2.5cm]{geometry}
+\usepackage{fontspec}
+\usepackage[english, bidi=basic, provide=*]{babel}
+\babelprovide[import, onchar=ids fonts]{english}
+\babelfont{rm}{Noto Sans}
+
+\usepackage{amsmath}
+\usepackage{booktabs}
+\usepackage{xcolor}
+\usepackage{hyperref}
+
+% Document Accent Colors
+\definecolor{primary}{RGB}{30, 58, 138}
+\definecolor{secondary}{RGB}{71, 85, 105}
+\definecolor{lightbg}{RGB}{248, 250, 252}
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=primary,
+    urlcolor=primary,
+    pdftitle={Hotel Chain Management System - Project Report}
+}
+
+\begin{document}
+
+% Title Block
+\begin{center}
+    {\Huge \textbf{\color{primary} Hotel Management System}}\\[0.6em]
+    {\Large \textbf{Algorithms and Data Structures 1 — Project Report}}\\[1em]
+    {\large \textbf{Course Project 2026--2027}}
+\end{center}
+
+\vspace{0.5cm}
+\hrule height 1pt
+\vspace{1cm}
+
+\section{Introduction and Architecture Overview}
+
+The objective of this project is to implement a robust management system for a hotel chain containing multiple locations (sites) across different cities, with each location accommodating multiple clients (bookings). All data items and their hierarchical relationships are modeled using \textbf{Singly Linked Lists (SLL)}.
+
+The core architecture relies on a three-tier nested structure defined in \texttt{tp3.h}:
+\begin{itemize}
+    \item \textbf{\texttt{T\_Hotel}}: Represents the root hotel chain entity, containing a name string and a pointer to the head of the linked list of sites (\texttt{T\_Site}).
+    \item \textbf{\texttt{T\_Site}}: Represents an individual hotel location in a specific city, tracking the client count, a pointer to the head of its client list, and a pointer to the next site.
+    \item \textbf{\texttt{T\_Client}}: Represents an individual customer booking with fields for last name, first name, age, room number, and a pointer to the next client node.
+\end{itemize}
+
+\section{Additional Structures and Design Choices}
+
+To ensure optimal performance, memory safety, and maintainability beyond the basic project requirements, several auxiliary functions and design choices were introduced:
+
+\subsection{Search and Sorting Strategy (\texttt{searchClients})}
+\begin{itemize}
+    \item \textbf{Design Choice:} Rather than creating a separate, dedicated linked list structure to store search results (which would introduce redundant pointer overhead and complex memory management), we implemented a \textbf{dynamic array of pointers} (\texttt{T\_Client **results}) coupled with the C standard library's \texttt{qsort} function.
+    \item \textbf{Rationale:} A dynamic array allows efficient $O(1)$ amortized collection of matching client references across all sites. Sorting the filtered subset using \texttt{qsort} and a custom static comparator function (\texttt{compareClients}) cleanly sorts the results alphabetically by last name and then first name without altering the underlying primary data structure.
+\end{itemize}
+
+\subsection{Robust Memory Management (\texttt{freeHotel}, \texttt{freeSite}, \texttt{freeClient})}
+\begin{itemize}
+    \item \textbf{Design Choice:} Comprehensive recursive deallocation functions were implemented to prevent memory leaks.
+    \item \textbf{Rationale:} Because nodes are dynamically allocated via \texttt{malloc} and strings are duplicated using \texttt{strdup}, deleting a site or quitting the program requires descending down the hierarchy (freeing all clients within a site, then the site's city string, then the site itself, and finally the hotel name and hotel structure).
+\end{itemize}
+
+\section{Time Complexity Analysis}
+
+Below is the algorithmic time complexity analysis for each implemented function in the project:
+
+\vspace{0.3cm}
+\begin{table}[h!]
+\centering
+\small
+\begin{tabular}{p{3.2cm} p{3.8cm} p{7.5cm}}
+\toprule
+\textbf{Function Name} & \textbf{Time Complexity} & \textbf{Explanation / Operational Analysis} \\
+\midrule
+\texttt{createClient} & $O(1)$ & Allocates memory and duplicates strings in constant time. \\
+\midrule
+\texttt{createSite} & $O(1)$ & Allocates memory for a site and initializes pointers in constant time. \\
+\midrule
+\texttt{createHotel} & $O(1)$ & Allocates memory for the hotel chain structure in constant time. \\
+\midrule
+\texttt{addClient} & $O(N)$ & Traverses the site's client list to insert the client in alphabetical order ($N$ = clients at site). \\
+\midrule
+\texttt{addSite} & $O(M)$ & Traverses the hotel's site list to insert the city in alphabetical order ($M$ = total sites). \\
+\midrule
+\texttt{displayHotel} & $O(M)$ & Linear traversal over all $M$ sites in the hotel chain to print city statistics. \\
+\midrule
+\texttt{displaySite} & $O(N)$ & Linear traversal over all $N$ clients at a specific site to print booking details. \\
+\midrule
+\texttt{deleteClient} & $O(N)$ & Traverses up to $N$ clients at a site to locate, unlink, and free the target booking. \\
+\midrule
+\texttt{deleteSite} & $O(M + N_{\text{total}})$ & Traverses site list ($O(M)$) and frees all associated client bookings ($O(N_{\text{total}})$). \\
+\midrule
+\texttt{searchClients} & $O(M \cdot N_{\text{avg}} + K \log K)$ & Traverses all sites/clients to find $K$ matches, then sorts the dynamic array of size $K$ using \texttt{qsort}. \\
+\midrule
+\texttt{processingfile} & $O(L \cdot (M + N))$ & Reads $L$ lines from file, searching/adding sites ($O(M)$) and inserting clients ($O(N)$) per line. \\
+\midrule
+\texttt{freeHotel} & $O(M + N_{\text{total}})$ & Recursively traverses every node across all sites and clients to release all heap memory. \\
+\bottomrule
+\end{tabular}
+\caption{Algorithmic Complexity Summary}
+\end{table}
+
+\section{Conclusion}
+
+The implemented Hotel Chain Management System successfully satisfies all structural and functional constraints using singly linked lists in C. Through modular design, strict memory management, and efficient searching algorithms, the program ensures reliability, scalability, and ease of maintenance for administrative hotel tasks.
+
+\end{document}
