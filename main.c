@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 #include "tp3.h"
 
 void printMenu() {
@@ -23,7 +22,7 @@ int main() {
     while (1) {
         printMenu();
         if (scanf("%d", &choice) != 1) {
-            while (getchar() != '\n'); /* очистка буфера ввода */
+            while (getchar() != '\n'); 
             continue;
         }
 
@@ -46,7 +45,11 @@ int main() {
                 }
                 char name[100];
                 printf("Enter hotel chain name: ");
-                scanf(" %[^\n]", name);
+                while (getchar() != '\n'); 
+
+                if (fgets(name, sizeof(name), stdin) != NULL) {
+                    name[strcspn(name, "\n")] = '\0';
+                }
                 hotel = createHotel(name);
                 printf("Hotel chain '%s' created.\n", hotel->name);
                 break;
@@ -54,7 +57,10 @@ int main() {
             case 2: {
                 char city[100];
                 printf("Enter city name: ");
-                scanf(" %[^\n]", city);
+                while (getchar() != '\n');
+                if (fgets(city, sizeof(city), stdin) != NULL) {
+                    city[strcspn(city, "\n")] = '\0';
+                }
                 T_Site *site = createSite(city);
                 if (addSite(hotel, site)) {
                     printf("Location '%s' added successfully.\n", city);
@@ -68,7 +74,10 @@ int main() {
                 char city[100], last[50], first[50];
                 int age, room;
                 printf("Enter city: ");
-                scanf(" %[^\n]", city);
+                while (getchar() != '\n');
+                if (fgets(city, sizeof(city), stdin) != NULL) {
+                    city[strcspn(city, "\n")] = '\0';
+                }
 
                 T_Site *curr = hotel->first;
                 while (curr && strcasecmp(curr->city, city) != 0) {
@@ -80,10 +89,19 @@ int main() {
                     break;
                 }
 
-                printf("Enter Last Name: "); scanf(" %[^\n]", last);
-                printf("Enter First Name: "); scanf(" %[^\n]", first);
-                printf("Enter Age: "); scanf("%d", &age);
-                printf("Enter Room Number: "); scanf("%d", &room);
+                while (getchar() != '\n');
+                printf("Enter Last Name: ");
+                if (fgets(last, sizeof(last), stdin) != NULL) {
+                    last[strcspn(last, "\n")] = '\0';
+                }
+                printf("Enter First Name: ");
+                if (fgets(first, sizeof(first), stdin) != NULL) {
+                    first[strcspn(first, "\n")] = '\0';
+                }
+                printf("Enter Age: ");
+                scanf("%d", &age);
+                printf("Enter Room Number: ");
+                scanf("%d", &room);
 
                 T_Client *client = createClient(last, first, age, room);
                 if (addClient(curr, client)) {
@@ -100,7 +118,10 @@ int main() {
             case 5: {
                 char city[100];
                 printf("Enter city: ");
-                scanf(" %[^\n]", city);
+                while (getchar() != '\n');
+                if (fgets(city, sizeof(city), stdin) != NULL) {
+                    city[strcspn(city, "\n")] = '\0';
+                }
 
                 T_Site *curr = hotel->first;
                 while (curr && strcasecmp(curr->city, city) != 0) {
@@ -116,9 +137,19 @@ int main() {
             }
             case 6: {
                 char city[100], last[50], first[50];
-                printf("Enter city: "); scanf(" %[^\n]", city);
-                printf("Enter Last Name: "); scanf(" %[^\n]", last);
-                printf("Enter First Name: "); scanf(" %[^\n]", first);
+                printf("Enter city: ");
+                while (getchar() != '\n');
+                if (fgets(city, sizeof(city), stdin) != NULL) {
+                    city[strcspn(city, "\n")] = '\0';
+                }
+                printf("Enter Last Name: ");
+                if (fgets(last, sizeof(last), stdin) != NULL) {
+                    last[strcspn(last, "\n")] = '\0';
+                }
+                printf("Enter First Name: ");
+                if (fgets(first, sizeof(first), stdin) != NULL) {
+                    first[strcspn(first, "\n")] = '\0';
+                }
 
                 T_Site *curr = hotel->first;
                 while (curr && strcasecmp(curr->city, city) != 0) {
@@ -135,7 +166,10 @@ int main() {
             case 7: {
                 char city[100];
                 printf("Enter city to delete: ");
-                scanf(" %[^\n]", city);
+                while (getchar() != '\n');
+                if (fgets(city, sizeof(city), stdin) != NULL) {
+                    city[strcspn(city, "\n")] = '\0';
+                }
 
                 if (deleteSite(hotel, city)) {
                     printf("Location '%s' and all its bookings deleted.\n", city);
@@ -147,7 +181,10 @@ int main() {
             case 8: {
                 char prefix[50];
                 printf("Enter last name search criteria/prefix: ");
-                scanf(" %[^\n]", prefix);
+                while (getchar() != '\n');
+                if (fgets(prefix, sizeof(prefix), stdin) != NULL) {
+                    prefix[strcspn(prefix, "\n")] = '\0';
+                }
                 searchClients(*hotel, prefix);
                 break;
             }
@@ -164,6 +201,3 @@ int main() {
 
     return 0;
 }
-=======
-#include "tp3.h"
->>>>>>> da62da63f1caa411fbec4f263ed96cefe90d1ffb
