@@ -1,0 +1,15 @@
+Vanderberg;Elina;27;415;Baku
+Kowalski;Marek;34;208;Paris
+Petrovic;Luka;22;316;Baku
+Nakamura;Yui;29;507;Berlin
+Moretti;Alessio;41;122;Paris
+Andersson;Freja;25;603;Baku
+Dubois;Theo;31;214;Berlin
+Silva;Ines;23;109;Lyon
+Schneider;Felix;38;421;Paris
+Eriksson;Linnea;26;305;Lyon
+Tanaka;Ren;32;512;Baku
+Novak;Petra;28;117;Berlin
+O'Connor;Sean;36;228;Paris
+Haddad;Mira;24;404;Lyon
+Costa;Rafael;30;319;Baku

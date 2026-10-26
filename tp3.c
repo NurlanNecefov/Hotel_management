@@ -1,4 +1,6 @@
 #include "tp3.h"
+#include <string.h>
+#include <stdio.h>
 
 // Mehemmed's Part
 
@@ -143,12 +145,6 @@ void freeHotel(T_Hotel *hotel) {
     free(hotel);
 }
 
-// Nurlan's Part
-
-#include "tp3.h"
-#include <string.h>
-#include <stdio.h>
-
 
 int addClient(T_Site *site, T_Client *client){
     T_Client *current_client;
@@ -161,7 +157,7 @@ int addClient(T_Site *site, T_Client *client){
     else{
         current_client = site->first;
         while (1){
-            if (current_client = NULL) break;
+            if (current_client == NULL) break;
             
             if (strcmp(current_client->last_name, client->last_name) < 0)
             {
@@ -221,76 +217,168 @@ int deleteClient(T_Site *site, char *last_name, char *first_name){
             }
         }
     }
-    else return 0; // no clients in site
+    return 0; // no clients in site
 }
 
-void searchClients(T_Hotel *hotel, char *critereaName){
-    T_Site *current_site = hotel->first;
-    int result_num = 0;
-    T_Client *first_result = NULL;
-    T_Client *current_result = first_result;
-    
+static int compareClients(const void *a, const void *b)
+{
+    const T_Client *c1 = *(T_Client * const *)a;
+    const T_Client *c2 = *(T_Client * const *)b;
 
-    while (current_site != NULL)
-    {
-        T_Client *current_client = current_site->first;
-        
-        for (int i = 0; i < current_site->clients; i++)
-        {
-            int is_it_result = 1;
-            for (int j = 0; j < strlen(critereaName); j++)
-            {
-                if (current_client->last_name[i] != critereaName[i]) is_it_result = 0;
-            }
-            if(is_it_result){
-                while (1)
-                {
-                    if (first_result == NULL){
-                        first_result = malloc(sizeof(T_Client));
-                        first_result = current_client;
+    int result = strcmp(c1->last_name, c2->last_name);
+
+    if (result == 0)
+        result = strcmp(c1->first_name, c2->first_name);
+
+    return result;
+}
+
+void searchClients(T_Hotel *hotel, char *critereaName)
+{
+    if (hotel == NULL || critereaName == NULL) {
+        printf("Invalid hotel or search criterion.\n");
+        return;
+    }
+
+    // Remove the newline potentially added by fgets()
+    size_t len = strcspn(critereaName, "\r\n");
+
+    if (len == 0) {
+        printf("Please enter a name to search.\n");
+        return;
+    }
+
+    T_Client **results = NULL;
+    size_t count = 0;
+    size_t capacity = 0;
+
+    T_Site *site = hotel->first;
+
+    while (site != NULL) {
+        T_Client *client = site->first;
+
+        while (client != NULL) {
+            if (client->first_name != NULL &&
+                client->last_name != NULL &&
+                (strncasecmp(client->first_name, critereaName, len) == 0 ||
+                 strncasecmp(client->last_name, critereaName, len) == 0)) {
+
+                if (count == capacity) {
+                    size_t new_capacity = (capacity == 0) ? 8 : capacity * 2;
+
+                    T_Client **temp = realloc(
+                        results, new_capacity * sizeof(*results)
+                    );
+
+                    if (temp == NULL) {
+                        free(results);
+                        printf("Memory allocation failed.\n");
+                        return;
                     }
-                    else{
-                        current_result->next = malloc(sizeof(T_Client));
-                        current_result->next = current_client;
-                        current_result = current_result->next;
-                    }
+
+                    results = temp;
+                    capacity = new_capacity;
                 }
-                result_num++;
+
+                results[count] = client;
+                count++;
             }
+
+            client = client->next;
         }
-        current_site = current_site->next;
-    }
-    
-    // sorting for first_name
 
-    int swap = 0;
-    while(swap != 0){
-        current_result = first_result;
-        swap = 0;
-
-        for (int i = 0; i < result_num; i++)
-        {
-            if(strcmp(
-                current_result->first_name,
-                current_result->next->first_name
-            ) > 0){
-                T_Client *temp_ptr = current_result->next->next;
-                current_result->next = temp_ptr;
-                current_result->next->next = current_result;
-                swap++;
-            }
-        }
+        site = site->next;
     }
 
-    // print results
-    printf("Last name:\t\tFirst name:\t\tAge:\t\tRoom:");
-    current_result = first_result;
-    for (int i = 0; i < result_num; i++)
-    {
-        printf("%s\t\t%s\t\t%d\t\t%d", current_result->last_name, current_result->first_name, current_result->age, current_result->num_room);
-        current_result = current_result->next;
+    if (count == 0) {
+        printf("No clients found.\n");
+        free(results);
+        return;
     }
+
+    qsort(results, count, sizeof(*results), compareClients);
+
+    printf("Found %zu client(s):\n", count);
+
+    for (size_t i = 0; i < count; i++) {
+        printf("%s %s | Age: %d | Room: %d\n",
+               results[i]->first_name,
+               results[i]->last_name,
+               results[i]->age,
+               results[i]->num_room);
+    }
+
+    free(results);
 }
+
+// void searchClients(T_Hotel *hotel, char *critereaName){
+//     T_Site *current_site = hotel->first;
+//     int result_num = 0;
+//     T_Client *first_result = NULL;
+//     T_Client *current_result = first_result;
+    
+
+//     while (current_site != NULL)
+//     {
+//         T_Client *current_client = current_site->first;
+        
+//         for (int i = 0; i < current_site->clients; i++)
+//         {
+//             int is_it_result = 1;
+//             size_t len = strlen(critereaName);
+//             for (size_t j = 0; j < len; j++) // for (int j = 0; j < strlen(critereaName); j++) -> for (size_t j = 0; j < len; j++)
+//             {
+//                 if (current_client->last_name[i] != critereaName[i]) is_it_result = 0;
+//             }
+//             if(is_it_result){
+//                 while (1)
+//                 {
+//                     if (first_result == NULL){
+//                         first_result = malloc(sizeof(T_Client));
+//                         first_result = current_client;
+//                     }
+//                     else{
+//                         current_result->next = malloc(sizeof(T_Client));
+//                         current_result->next = current_client;
+//                         current_result = current_result->next;
+//                     }
+//                 }
+//                 result_num++;
+//             }
+//         }
+//         current_site = current_site->next;
+//     }
+    
+//     // sorting for first_name
+
+//     int swap = 0;
+//     while(swap != 0){
+//         current_result = first_result;
+//         swap = 0;
+
+//         for (int i = 0; i < result_num; i++)
+//         {
+//             if(strcmp(
+//                 current_result->first_name,
+//                 current_result->next->first_name
+//             ) > 0){
+//                 T_Client *temp_ptr = current_result->next->next;
+//                 current_result->next = temp_ptr;
+//                 current_result->next->next = current_result;
+//                 swap++;
+//             }
+//         }
+//     }
+
+//     // print results
+//     printf("Last name:\t\tFirst name:\t\tAge:\t\tRoom:");
+//     current_result = first_result;
+//     for (int i = 0; i < result_num; i++)
+//     {
+//         printf("%s\t\t%s\t\t%d\t\t%d", current_result->last_name, current_result->first_name, current_result->age, current_result->num_room);
+//         current_result = current_result->next;
+//     }
+// }
 
 void quit(T_Hotel hotel){
     T_Site *current_site = hotel.first;
@@ -299,10 +387,88 @@ void quit(T_Hotel hotel){
     {
         for (int i = 0; i < current_site->clients; i++)
         {
+            T_Client *next_client = current_client->next;
+
             free(current_client);
-            current_client = current_client->next;
+
+            current_client = next_client;
         }
         if (current_site->next != NULL) current_site = current_site->next;
         else break;        
     }
+}
+
+T_Client *createClient(char *last_name, char *first_name, int age, int num_room) {
+    if (last_name == NULL || first_name == NULL)
+        return NULL;
+
+    T_Client *client = malloc(sizeof(T_Client));
+
+    if (client == NULL)
+        return NULL;
+
+    client->last_name = strdup(last_name);
+    client->first_name = strdup(first_name);
+
+    if (client->last_name == NULL || client->first_name == NULL) {
+        free(client->last_name);
+        free(client->first_name);
+        free(client);
+        return NULL;
+    }
+
+    client->age = age;
+    client->num_room = num_room;
+    client->next = NULL;
+
+    return client;
+}
+
+void processingfile(T_Hotel *hotel)
+{
+    if (hotel == NULL)
+        return;
+
+    FILE *file = fopen("bookings.txt", "r");
+
+    if (file == NULL) {
+        printf("Could not open bookings.txt\n");
+        return;
+    }
+
+    char line[256];
+
+    while (fgets(line, sizeof(line), file) != NULL) {
+        char last[50], first[50], city[100];
+        int age, room;
+
+        if (sscanf(line, "%49[^;];%49[^;];%d;%d;%99[^\n]",
+                   last, first, &age, &room, city) != 5) {
+            continue;
+        }
+
+        T_Site *site = hotel->first;
+
+        while (site != NULL &&
+               strcasecmp(site->city, city) != 0) {
+            site = site->next;
+        }
+
+        if (site == NULL) {
+            site = createSite(city);
+
+            if (site == NULL || !addSite(hotel, site)) {
+                freeSite(site);
+                continue;
+            }
+        }
+
+        T_Client *client = createClient(last, first, age, room);
+
+        if (client == NULL || !addClient(site, client)) {
+            freeClient(client);
+        }
+    }
+
+    fclose(file);
 }

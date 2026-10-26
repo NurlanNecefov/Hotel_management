@@ -3,6 +3,7 @@
 
 #include <stdio.h>
 #include <string.h>
+#include <strings.h>
 #include <stdlib.h>
 
 typedef struct Client
@@ -50,5 +51,13 @@ void processingfile(T_Hotel *hotel);
 
 // to free the space of malloc
 void freeHotel(T_Hotel *hotel);
+
+void freeSite(T_Site *site);
+
+void freeClient(T_Client *client);
+
+static int compareClients(const void *a, const void *b);
+
+void quit(T_Hotel hotel);
 
 #endif

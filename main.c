@@ -1,4 +1,5 @@
 #include "tp3.h"
+#include <stdio.h>
 
 void printMenu() {
     printf("\n=== HOTEL MANAGEMENT SYSTEM ===\n");
