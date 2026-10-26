@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 #include "tp3.h"
 
 void printMenu() {
@@ -163,3 +164,6 @@ int main() {
 
     return 0;
 }
+=======
+#include "tp3.h"
+>>>>>>> da62da63f1caa411fbec4f263ed96cefe90d1ffb
