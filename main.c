@@ -185,7 +185,7 @@ int main() {
                 if (fgets(prefix, sizeof(prefix), stdin) != NULL) {
                     prefix[strcspn(prefix, "\n")] = '\0';
                 }
-                searchClients(*hotel, prefix);
+                searchClients(hotel, prefix);
                 break;
             }
             case 9:
