@@ -17,7 +17,7 @@ typedef struct Client
 typedef struct Site
 {
     char *city;
-    int clients;
+    int number_clients;
     T_Client *first;
     T_Client *next;
 } T_Site;
