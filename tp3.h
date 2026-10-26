@@ -25,7 +25,7 @@ typedef struct Site
 typedef struct Hotel
 {
     char *name;
-    T_Client *first;
+    T_Site *first;
 } T_Hotel;
 
 T_Client *createClient(char *last_name, char *first_name, int age, int num_room);
