@@ -11,15 +11,15 @@ typedef struct Client
     char *first_name;
     int age;
     int num_room;
-    struct Client *next;
+    struct Client *next; // T_Client -> struct Client (because typedef hasn't defined yet)
 } T_Client;
 
 typedef struct Site
 {
     char *city;
-    int number_clients;
+    int clients;
     T_Client *first;
-    T_Client *next;
+    struct Site *next;
 } T_Site;
 
 typedef struct Hotel
