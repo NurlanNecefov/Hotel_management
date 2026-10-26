@@ -1,4 +1,4 @@
-Mehemmed
+Sadigov Mehemmed:
 • 1. Create a hotel chain
 
 • 2. Add a location to a hotel chain
@@ -9,7 +9,7 @@ Mehemmed
 • 7. Delete a location
 
 
-Nurlan
+Najafov Nurlan:
 • 3. Add a booking at a location
 • 6. Delete a booking at a location
 
