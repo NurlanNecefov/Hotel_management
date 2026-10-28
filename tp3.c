@@ -145,46 +145,31 @@ void freeHotel(T_Hotel *hotel) {
     free(hotel);
 }
 
+int addClient(T_Site *site, T_Client *client) {
+    if (!site || !client) return 0;
 
-int addClient(T_Site *site, T_Client *client){
-    T_Client *current_client;
-
-    if (site->first == NULL){
-        site->first = malloc(sizeof(T_Client));
-        *(site->first) = *client;
-        site->first->next = NULL;
-    }
-    else{
-        current_client = site->first;
-        while (1){
-            if (current_client == NULL) break;
-            
-            if (strcmp(current_client->last_name, client->last_name) < 0)
-            {
-                client->next = current_client->next;
-                current_client->next = client;
-                current_client = client->next;
-
-            }
-            else{
-                client->next = current_client;
-                break;
-            }
+    // if the list is NULL
+    if (site->first == NULL || 
+        strcmp(client->last_name, site->first->last_name) < 0 || 
+        (strcmp(client->last_name, site->first->last_name) == 0 && strcmp(client->first_name, site->first->first_name) < 0)) {
+        client->next = site->first;
+        site->first = client;
+    } else {
+        T_Client *curr = site->first;
+        while (curr->next != NULL && 
+               (strcmp(curr->next->last_name, client->last_name) < 0 || 
+               (strcmp(curr->next->last_name, client->last_name) == 0 && strcmp(curr->next->first_name, client->first_name) < 0))) {
+            curr = curr->next;
         }
-
-
-
-        // current_client = site->first;
-
-        // while(current_client->next != NULL) current_client = current_client->next;
-        // current_client->next = malloc(sizeof(T_Client));
-        // current_client = current_client->next;
+        client->next = curr->next;
+        curr->next = client;
     }
-    
-    site->clients++;
 
+    site->clients++;
     return 1;
 }
+
+
 
 
 int deleteClient(T_Site *site, char *last_name, char *first_name){
@@ -240,7 +225,7 @@ void searchClients(T_Hotel *hotel, char *critereaName)
         return;
     }
 
-    // Remove the newline potentially added by fgets()
+    // remove the newline potentially added by fgets()
     size_t len = strcspn(critereaName, "\r\n");
 
     if (len == 0) {
