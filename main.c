@@ -90,7 +90,7 @@ int main() {
                     break;
                 }
 
-                while (getchar() != '\n');
+                // while (getchar() != '\n');
                 printf("Enter Last Name: ");
                 if (fgets(last, sizeof(last), stdin) != NULL) {
                     last[strcspn(last, "\n")] = '\0';
